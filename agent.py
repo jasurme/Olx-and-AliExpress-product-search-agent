@@ -47,7 +47,7 @@ def search_internet(state: AgentState)->AgentState:
     
     product_name = state["product_name"]
     def prompt(platform):
-        return f"use your search tool to search and get up to date, real info. give in this format: - Product name: str - Price: float -Brand name: str(optional) - Link: url link.   what are the prices of [{product_name}] in {platform}."
+        return f"use your search tool to search and get product prices, real info. give in this format: - Product name: str - Price: float -Brand name: str(optional) - Link: url link.   what are the prices of [{product_name}] in {platform}."
     Aliexpress_prompt = prompt(search_platforms[0])
     Olx_prompt = prompt(search_platforms[1])
     ali_agent_response = agent.invoke({"messages": [{"role": "user", "content": Aliexpress_prompt}]})
@@ -62,9 +62,20 @@ def search_internet(state: AgentState)->AgentState:
 def finalize_response(state: AgentState)->AgentState:
     olx = state["olx_result"]
     ali = state['aliexpress_result']
-    final = model.invoke(f"Here are results from 2 platforms. Merge them and display as plain text without any markdown formatting, asterisks, or special characters. but seperate two platform results.  Just return clean readable text. your response is displayed in frontend. so, don't add any extra/explanatory/additional text.\n\nAliExpress: {ali}\n\nOLX: {olx}")
-    response = final.content
-    state["final_response"] = response
+    product = state["product_name"]
+    
+    
+    state["final_response"] = f"""
+    Product: {product}
+
+    AliExpress: 
+    {ali}
+
+    Olx: 
+    {olx}
+    
+    
+    """
     return state
 
 graph.add_node("identify", identify_object)
