@@ -43,14 +43,18 @@ def identify_object(state: AgentState)->AgentState:
     return state
 
 def search_internet(state: AgentState)->AgentState:
-    Aliexpress = search_platforms[0]
-    Olx = search_platforms[1]
+    
+    
     product_name = state["product_name"]
-    ali_agent_response = agent.invoke({"messages": [{"role": "user", "content": f"use your search tool to search and get up to date, real info. give in this format: - Product name: str - Price: $float -Brand name: str(optional).   what are the prices of [{product_name}] in {Aliexpress}."}]})
+    def prompt(platform):
+        return f"use your search tool to search and get up to date, real info. give in this format: - Product name: str - Price: $float -Brand name: str(optional) - Link: url link.   what are the prices of [{product_name}] in {platform}."
+    Aliexpress_prompt = prompt(search_platforms[0])
+    Olx_prompt = prompt(search_platforms[1])
+    ali_agent_response = agent.invoke({"messages": [{"role": "user", "content": Aliexpress_prompt}]})
     ali_agent_response = ali_agent_response["messages"][-1].content
     state["aliexpress_result"] = ali_agent_response
 
-    olx_agent_response = agent.invoke({"messages": [{"role": "user", "content": f"use your search tool to search and get up to date, real info. give in this format: - Product name: str - Price: $float -Brand name: str(optional). make sure your search results exactly match with product. for example, if it is samsung remote control, but if your search results give samsung TV, it is wrong. make sure it matches. what are the prices of [{product_name}] in {Olx}."}]})
+    olx_agent_response = agent.invoke({"messages": [{"role": "user", "content": Olx_prompt}]})
     olx_agent_response = olx_agent_response["messages"][-1].content
     state["olx_result"] = olx_agent_response
     return state
