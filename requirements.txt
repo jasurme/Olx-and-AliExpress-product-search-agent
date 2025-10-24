@@ -1,0 +1,7 @@
+langchain-tavily
+python-dotenv
+langchain
+langchain_openai
+langgraph
+flask
+werkzeug
