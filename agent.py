@@ -47,7 +47,7 @@ def search_internet(state: AgentState)->AgentState:
     
     product_name = state["product_name"]
     def prompt(platform):
-        return f"use your search tool to search and get up to date, real info. give in this format: - Product name: str - Price: $float -Brand name: str(optional) - Link: url link.   what are the prices of [{product_name}] in {platform}."
+        return f"use your search tool to search and get up to date, real info. give in this format: - Product name: str - Price: float -Brand name: str(optional) - Link: url link.   what are the prices of [{product_name}] in {platform}."
     Aliexpress_prompt = prompt(search_platforms[0])
     Olx_prompt = prompt(search_platforms[1])
     ali_agent_response = agent.invoke({"messages": [{"role": "user", "content": Aliexpress_prompt}]})
